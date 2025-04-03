@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扩展管理 - Microsoft Edge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="extension-management">
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+            <input type="text" placeholder="搜索已安装的扩展" id="searchInput">
+        </div>
+
+        <!-- 导航选项 -->
+        <div class="nav-options">
+            <span class="active">我的扩展</span>
+            <span>键盘快捷方式</span>
+        </div>
+
+        <!-- 扩展功能介绍 -->
+        <div class="extension-promo">
+            <h3>获取 Microsoft Edge 扩展</h3>
+            <p>使用扩展来个性化浏览器。扩展程序是简单的工具，可自定义浏览器体验并提供更多控制。<a href="#">了解更多信息</a></p>
+        </div>
+
+        <!-- 已安装扩展列表 -->
+        <div class="installed-extensions">
+            <h4>已安装的扩展</h4>
+            <p class="subtitle">来自 Microsoft Edge 扩展应用商店</p>
+
+            <div class="extensions-list" id="extensionsList">
+                <!-- 扩展项通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 开发者模式 -->
+        <div class="developer-mode">
+            <label>
+                <input type="checkbox" id="devMode">
+                开发人员模式
+                <a href="#">了解更多信息</a>
+            </label>
+        </div>
+
+        <!-- 扩展操作按钮 -->
+        <div class="extension-actions" id="devButtons" style="display: none;">
+            <button>加载新压缩的扩展</button>
+            <button>打包扩展</button>
+            <button>更新</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
