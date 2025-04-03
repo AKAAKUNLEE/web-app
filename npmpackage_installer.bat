@@ -1,8 +1,8 @@
 @echo off
-:: æ£€æŸ¥å¹¶è·å–ç®¡ç†å‘˜æƒé™
+:: ¼ì²é²¢»ñÈ¡¹ÜÀíÔ±È¨ÏŞ
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
 if '%errorlevel%' NEQ '0' (
-    echo è¯·æ±‚ç®¡ç†å‘˜æƒé™...
+    echo ÇëÇó¹ÜÀíÔ±È¨ÏŞ...
     goto UACPrompt
 ) else ( goto gotAdmin )
 
@@ -17,52 +17,37 @@ if '%errorlevel%' NEQ '0' (
     pushd "%CD%"
     CD /D "%~dp0"
 
-:: ä¸»å®‰è£…è¿‡ç¨‹
+:: Ö÷°²×°¹ı³Ì
 echo.
 echo ============================================
-echo æ­£åœ¨ä»¥ç®¡ç†å‘˜èº«ä»½å®‰è£… Electron å¼€å‘ç¯å¢ƒ
+echo ÕıÔÚÒÔ¹ÜÀíÔ±Éí·İ°²×° Electron ¿ª·¢»·¾³
 echo ============================================
 echo.
 
-:: æ£€æŸ¥Node.jså’Œnpmæ˜¯å¦å®‰è£…
-where node >nul 2>&1
-if %errorlevel% neq 0 (
-    echo é”™è¯¯: Node.js æœªå®‰è£…æˆ–æœªæ·»åŠ åˆ°ç³»ç»ŸPATH
-    pause
-    exit /b
-)
-
-where npm >nul 2>&1
-if %errorlevel% neq 0 (
-    echo é”™è¯¯: npm æœªå®‰è£…æˆ–æœªæ·»åŠ åˆ°ç³»ç»ŸPATH
-    pause
-    exit /b
-)
-
-:: æ˜¾ç¤ºå½“å‰nodeå’Œnpmç‰ˆæœ¬
-echo å½“å‰Node.jsç‰ˆæœ¬:
+:: ÏÔÊ¾µ±Ç°nodeºÍnpm°æ±¾
+echo µ±Ç°Node.js°æ±¾:
 node -v
-echo å½“å‰npmç‰ˆæœ¬:
+echo µ±Ç°npm°æ±¾:
 npm -v
 echo.
 
-:: å®‰è£…Electronå’Œelectron-builder
-echo æ­£åœ¨å®‰è£…Electronå’Œelectron-builder...
+:: °²×°ElectronºÍelectron-builder
+echo ÕıÔÚ°²×°ElectronºÍelectron-builder...
 npm install electron electron-builder --save-dev --verbose
 echo.
 
 
 echo.
 echo ============================================
-echo å®‰è£…å®Œæˆï¼
-echo å¯ç”¨å‘½ä»¤:
-echo   npm start    - å¯åŠ¨å¼€å‘æ¨¡å¼
-echo   npm run pack - æ‰“åŒ…åº”ç”¨(ä¸ç”Ÿæˆå®‰è£…åŒ…)
-echo   npm run dist - æ„å»ºå®Œæ•´å®‰è£…åŒ…
-echo   npm start    - å¼€å‘æ¨¡å¼è¿è¡Œ
+echo °²×°Íê³É£¡
+echo ¿ÉÓÃÃüÁî:
+echo   npm start    - Æô¶¯¿ª·¢Ä£Ê½
+echo   npm run pack - ´ò°üÓ¦ÓÃ(²»Éú³É°²×°°ü)
+echo   npm run dist - ¹¹½¨ÍêÕû°²×°°ü
+echo   npm start    - ¿ª·¢Ä£Ê½ÔËĞĞ
 echo.
-echo æ‰“åŒ…é…ç½®:
-echo   - é»˜è®¤è¾“å‡ºç›®å½•: ./dist
+echo ´ò°üÅäÖÃ:
+echo   - Ä¬ÈÏÊä³öÄ¿Â¼: ./dist
 echo ============================================
 echo.
 pause
