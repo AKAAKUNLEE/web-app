@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>扩展详情</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div id="extensionDetails" class="details-container">
+      <h2 id="extName"></h2>
+      <div class="meta-info">
+        <div><strong>版本:</strong> <span id="extVersion"></span></div>
+        <div><strong>ID:</strong> <span id="extId"></span></div>
+        <div><strong>状态:</strong> <span id="extStatus"></span></div>
+      </div>
+
+      <h3>描述</h3>
+      <p id="extDescription"></p>
+
+      <h3>权限</h3>
+      <ul id="permissionsList"></ul>
+
+      <div class="action-buttons">
+        <button id="btnClose" class="btn-primary">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const extId = params.get('id');
+      
+      const extensions = await window.electronAPI.getExtensions();
+      const ext = extensions.find(x => x.id === extId);
+      
+      if (ext) {
+        document.getElementById('extName').textContent = ext.name;
+        document.getElementById('extVersion').textContent = ext.version;
+        document.getElementById('extId').textContent = ext.id;
+        document.getElementById('extStatus').textContent = ext.status;
+        document.getElementById('extDescription').textContent = ext.description || '无描述';
+        
+        const permissionsList = document.getElementById('permissionsList');
+        if (ext.manifest?.permissions?.length > 0) {
+          ext.manifest.permissions.forEach(perm => {
+            const li = document.createElement('li');
+            li.textContent = perm;
+            permissionsList.appendChild(li);
+          });
+        } else {
+          permissionsList.innerHTML = '<li>此扩展不需要特殊权限</li>';
+        }
+      }
+
+      document.getElementById('btnClose').addEventListener('click', () => {
+        window.close();
+      });
+    });
+  </script>
+</body>
+</html>
