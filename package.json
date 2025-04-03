@@ -1,0 +1,21 @@
+{
+  "name": "my-web-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^35.0.2"
+  },
+  "build": {
+
+  "productName": "MD2Card",
+  "icon": "./MD2Card.ico"
+}
+}
