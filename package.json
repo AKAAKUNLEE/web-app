@@ -29,10 +29,8 @@
       }
     ]
   },
-  "dependencies": {
-    "electron": "^latest"
-  },
   "devDependencies": {
+    "electron": "^latest",
     "electron-builder": "^latest"
   }
 }
