@@ -1,2 +1,4 @@
-# 只忽略:dist/
+# 忽略:dist/
 dist/
+# 忽略:node_modules/
+node_modules/
