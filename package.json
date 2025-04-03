@@ -1,5 +1,5 @@
 {
-  "name": "my-web-app",
+  "name": "web-app",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -15,7 +15,6 @@
     "electron-builder": "^26.0.12"
   },
   "build": {
-    "productName": "MD2Card",
-    "icon": "./MD2Card.ico"
+    "productName": "Alist"
   }
 }
