@@ -1,27 +1,24 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, session } = require('electron');
+const path = require('path');
 
-function createWindow () {
+function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
+    },
   });
 
-  win.loadURL('https://md2card.com/zh/editor'); // 替换为你的网页地址
+  // 加载你的网页
+  win.loadURL('https://127.0.0.1:5244');
+
+  // 加载 Chrome 扩展（解压的扩展文件夹）
+  session.defaultSession.loadExtension(
+    path.join(__dirname, 'extensions/your-extension') // 替换为你的扩展路径
+  );
 }
 
 app.whenReady().then(createWindow);
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
