@@ -51,6 +51,7 @@ echo 正在安装Electron和electron-builder...
 npm install electron electron-builder --save-dev --verbose
 echo.
 
+
 echo.
 echo ============================================
 echo 安装完成！
@@ -58,7 +59,11 @@ echo 可用命令:
 echo   npm start    - 启动开发模式
 echo   npm run pack - 打包应用(不生成安装包)
 echo   npm run dist - 构建完整安装包
+echo   npm start    - 开发模式运行
+echo.
+echo 打包配置:
+echo   - 默认输出目录: ./dist
 echo ============================================
 echo.
-
 pause
+
