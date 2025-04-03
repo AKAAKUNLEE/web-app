@@ -19,12 +19,12 @@
     },
     "extraResources": [
       {
-        "from": "data",       
-        "to": "data"          
+        "from": "data",
+        "to": "data"
       },
       {
         "from": "extensions",
-        "to": "extensions"  
+        "to": "extensions"
       },
       {
         "from": "assets",
@@ -34,12 +34,13 @@
         "from": "src",
         "to": "src"
       }
-
     ]
-
   },
   "devDependencies": {
     "electron": "^35.1.3",
     "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3"
   }
 }
