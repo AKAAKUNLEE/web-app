@@ -1,0 +1,216 @@
+/* styles.css */
+:root {
+    --primary-blue: #007bff;
+    --error-red: #dc3545;
+    --border-gray: #ced4da;
+    --background-gray: #f8f9fa;
+    --text-dark: #212529;
+    --text-muted: #6c757d;
+}
+
+body {
+    background-color: #f1f3f5;
+    margin: 0;
+    font-family: 'Segoe UI', system-ui;
+}
+
+.extension-management {
+    max-width: 960px;
+    margin: 20px auto;
+    padding: 24px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 搜索栏 */
+.search-bar input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.search-bar input:focus {
+    outline: 2px solid rgba(0,123,255,0.2);
+    border-color: var(--primary-blue);
+}
+
+/* 导航标签 */
+.nav-options {
+    display: flex;
+    gap: 32px;
+    border-bottom: 1px solid var(--border-gray);
+    margin-bottom: 16px;
+}
+
+.nav-options span {
+    padding: 8px 0;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    color: var(--text-muted);
+}
+
+.nav-options span.active {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    font-weight: 500;
+}
+
+/* 推广区域 */
+.extension-promo {
+    background: var(--background-gray);
+    padding: 20px;
+    border-radius: 6px;
+    margin: 20px 0;
+}
+
+.extension-promo h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.25rem;
+    color: var(--text-dark);
+}
+
+.extension-promo p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.extension-promo a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* 扩展列表 */
+.installed-extensions h4 {
+    margin: 24px 0 8px 0;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+}
+
+/* 扩展项 */
+.extension-item {
+    background: white;
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    padding: 16px;
+    margin: 16px 0;
+    transition: box-shadow 0.2s ease;
+}
+
+.extension-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.extension-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 15px;
+}
+
+.status {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.status.error {
+    color: var(--error-red);
+}
+
+.description {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+.extension-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.id {
+    font-family: Consolas, monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+/* 操作按钮 */
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+button {
+    padding: 6px 14px;
+    border: 1px solid var(--border-gray);
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: var(--background-gray);
+}
+
+button.remove {
+    color: var(--error-red);
+    border-color: #ffcccc;
+}
+
+/* 开发者模式 */
+.developer-mode {
+    margin: 28px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border-gray);
+}
+
+.developer-mode input[type="checkbox"] {
+    margin: 0;
+    accent-color: var(--primary-blue);
+}
+
+/* 底部操作按钮 */
+.extension-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.extension-actions button {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
+.extension-actions button:hover {
+    background: #0069d9;
+}
