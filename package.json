@@ -11,11 +11,11 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "electron": "^35.0.2"
+    "electron": "^35.0.2",
+    "electron-builder": "^26.0.12"
   },
   "build": {
-
-  "productName": "MD2Card",
-  "icon": "./MD2Card.ico"
-}
+    "productName": "MD2Card",
+    "icon": "./MD2Card.ico"
+  }
 }
