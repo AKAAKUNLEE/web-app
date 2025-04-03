@@ -1,20 +1,38 @@
 {
   "name": "web-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "A web app packaged with Electron",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "devDependencies": {
-    "electron": "^35.0.2",
-    "electron-builder": "^26.0.12"
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win --x64 --publish never"
   },
   "build": {
-    "productName": "Alist"
+    "appId": "com.example.Alist",
+    "productName": "Alist",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.ico"
+    },
+    "extraResources": [
+      {
+        "from": "extensions",
+        "to": "extensions"
+      },
+      {
+        "from": "assets",
+        "to": "assets"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron": "^latest"
+  },
+  "devDependencies": {
+    "electron-builder": "^latest"
   }
 }
