@@ -21,7 +21,13 @@
       {
         "from": "data",       
         "to": "data"          
-      }]
+      },
+      {
+        "from": "extensions",
+        "to": "extensions"  
+      }
+
+    ]
 
   },
   "devDependencies": {
