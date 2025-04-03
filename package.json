@@ -25,6 +25,14 @@
       {
         "from": "extensions",
         "to": "extensions"  
+      },
+      {
+        "from": "assets",
+        "to": "assets"
+      },
+      {
+        "from": "src",
+        "to": "src"
       }
 
     ]
