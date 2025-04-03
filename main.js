@@ -1,147 +1,175 @@
-const { app, BrowserWindow, session, ipcMain } = require('electron');
+const { app, BrowserWindow, session, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const chokidar = require('chokidar');
 
-// 配置项
-const config = {
-  appName: 'MyWebApp',
-  defaultUrl: 'http://127.0.0.1:5244/',  // 替换为你的网页地址
-  extensionPath: path.join(__dirname, 'extensions/my-extension')  // 替换为你的扩展路径
-};
-
-// 创建主窗口
-let mainWindow;
-
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      sandbox: true,
-      webSecurity: true
-    },
-    icon: path.join(__dirname, 'assets/icon.ico')  // 应用图标
-  });
-
-  // 加载网页
-  mainWindow.loadURL(config.defaultUrl);
-
-  // 开发者工具
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
+class ExtensionManager {
+  constructor() {
+    this.extensions = new Map();
+    this.storagePath = path.join(app.getPath('userData'), 'extensions.json');
+    this.loadExtensions();
+    
+    // 监控扩展目录变化
+    chokidar.watch(this.getExtensionsDir()).on('all', () => {
+      this.loadExtensions();
+      this.sendUpdateToWindows();
+    });
   }
 
-  // 窗口关闭事件
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+  getExtensionsDir() {
+    return app.isPackaged 
+      ? path.join(process.resourcesPath, 'extensions')
+      : path.join(__dirname, 'extensions');
+  }
 
-  // 加载扩展
-  loadExtensions();
-}
-
-// 加载浏览器扩展
-async function loadExtensions() {
-  try {
-    if (fs.existsSync(config.extensionPath)) {
-      await session.defaultSession.loadExtension(config.extensionPath);
-      console.log('Extension loaded successfully');
+  loadExtensions() {
+    try {
+      if (fs.existsSync(this.storagePath)) {
+        const data = JSON.parse(fs.readFileSync(this.storagePath));
+        this.extensions = new Map(data);
+      }
+    } catch (err) {
+      console.error('加载扩展配置失败:', err);
     }
-  } catch (err) {
-    console.error('Failed to load extension:', err);
   }
-}
 
-// 获取数据存储路径
-function getDataPath() {
-  // 尝试写入 exe 所在目录（适用于绿色版）
-  const exeDir = path.dirname(app.getPath('exe'));
-  const localDataPath = path.join(exeDir, 'data');
-
-  try {
-    // 检查是否可写
-    fs.accessSync(exeDir, fs.constants.W_OK);
-    return localDataPath;
-  } catch (err) {
-    // 不可写，则使用 AppData
-    return path.join(app.getPath('appData'), config.appName, 'data');
+  saveExtensions() {
+    fs.writeFileSync(
+      this.storagePath,
+      JSON.stringify([...this.extensions], null, 2)
+    );
+    this.sendUpdateToWindows();
   }
-}
 
-// 确保数据目录存在
-function ensureDataDir() {
-  const dataPath = getDataPath();
-  if (!fs.existsSync(dataPath)) {
-    fs.mkdirSync(dataPath, { recursive: true });
-  }
-  return dataPath;
-}
-
-// 保存数据
-function saveData(filename, data) {
-  try {
-    const dataPath = ensureDataDir();
-    fs.writeFileSync(path.join(dataPath, filename), JSON.stringify(data));
-    return true;
-  } catch (err) {
-    console.error('Save data failed:', err);
-    return false;
-  }
-}
-
-// 读取数据
-function loadData(filename) {
-  try {
-    const dataPath = ensureDataDir();
-    const filePath = path.join(dataPath, filename);
-    if (fs.existsSync(filePath)) {
-      return JSON.parse(fs.readFileSync(filePath));
+  async installExtension(extensionPath) {
+    try {
+      const ext = await session.defaultSession.loadExtension(extensionPath);
+      const manifest = await this.readManifest(extensionPath);
+      
+      this.extensions.set(ext.id, {
+        id: ext.id,
+        path: extensionPath,
+        name: manifest.name || '未知扩展',
+        version: manifest.version || '0.0.0',
+        description: manifest.description || '',
+        enabled: true,
+        manifest
+      });
+      
+      this.saveExtensions();
+      return { success: true, extension: this.extensions.get(ext.id) };
+    } catch (err) {
+      return { success: false, error: err.message };
     }
-    return null;
-  } catch (err) {
-    console.error('Load data failed:', err);
-    return null;
+  }
+
+  async readManifest(extensionPath) {
+    const manifestPath = path.join(extensionPath, 'manifest.json');
+    return JSON.parse(fs.readFileSync(manifestPath));
+  }
+
+  async removeExtension(id) {
+    if (!this.extensions.has(id)) return false;
+    
+    try {
+      await session.defaultSession.removeExtension(id);
+      this.extensions.delete(id);
+      this.saveExtensions();
+      return true;
+    } catch (err) {
+      console.error('卸载扩展失败:', err);
+      return false;
+    }
+  }
+
+  sendUpdateToWindows() {
+    const windows = BrowserWindow.getAllWindows();
+    windows.forEach(win => {
+      win.webContents.send('extensions:updated', this.getExtensionsList());
+    });
+  }
+
+  getExtensionsList() {
+    return Array.from(this.extensions.values()).map(ext => ({
+      ...ext,
+      status: ext.enabled ? '已启用' : '已禁用',
+      error: !this.checkExtensionHealth(ext.id)
+    }));
+  }
+
+  checkExtensionHealth(id) {
+    const ext = this.extensions.get(id);
+    if (!ext) return false;
+    
+    try {
+      return fs.existsSync(path.join(ext.path, 'manifest.json'));
+    } catch {
+      return false;
+    }
   }
 }
 
 // 初始化应用
-app.whenReady().then(() => {
-  createWindow();
+const extensionManager = new ExtensionManager();
+let mainWindow;
 
-  // macOS 特殊处理
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+async function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 1000,
+    height: 800,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      sandbox: true
     }
   });
 
-  // 初始化数据目录
-  ensureDataDir();
-});
+  await mainWindow.loadFile('src/index.html');
 
-// 窗口全部关闭时退出应用
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.openDevTools();
   }
+}
+
+// IPC通信
+ipcMain.handle('extensions:list', () => extensionManager.getExtensionsList());
+ipcMain.handle('extensions:install', (_, path) => extensionManager.installExtension(path));
+ipcMain.handle('extensions:remove', (_, id) => extensionManager.removeExtension(id));
+ipcMain.handle('extensions:open-dialog', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
+    title: '选择扩展目录'
+  });
+  return canceled ? null : filePaths[0];
 });
 
-// IPC 通信示例
-ipcMain.handle('save-data', (event, { filename, data }) => {
-  return saveData(filename, data);
+ipcMain.on('extension:show-details', (_, id) => {
+  const ext = extensionManager.extensions.get(id);
+  if (!ext) return;
+
+  const detailsWindow = new BrowserWindow({
+    width: 600,
+    height: 500,
+    parent: mainWindow,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
+
+  detailsWindow.loadFile('src/details.html', {
+    query: { id }
+  });
 });
 
-ipcMain.handle('load-data', (event, filename) => {
-  return loadData(filename);
+// 应用生命周期
+app.whenReady().then(() => {
+  createWindow();
+  
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
 });
 
-// 错误处理
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
 });
